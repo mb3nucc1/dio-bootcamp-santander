@@ -39,7 +39,8 @@ O ambiente foi estruturado no **Oracle VirtualBox** utilizando uma rede privada 
 ### Validação de Conectividade
 ```bash
 ping -c 4 192.168.56.103    
-````
+```
+
 ---
 
 ## 3. Reconhecimento e Enumeração Inicial
