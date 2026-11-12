@@ -63,7 +63,7 @@ Portas 139 e 445/TCP: Samba smbd 3.X - 4.X (SMB)
 Para simular cenários realistas de auditoria controlada sem gerar sobrecarga desnecessária no ambiente, foram criadas listas personalizadas enxutas na pasta /wordlists contendo usuários e senhas comuns misturados às credenciais do ambiente de teste.   
 
 wordlists - users.txt
-user\msfadmin\admin\root
+user\msfadmin\nadmin\root
 
 wordlists - pass.txt
 123456\password\qwerty\msfadmin
@@ -92,7 +92,9 @@ ftp 192.168.56.102
 ```
 ---
 
-## 6. Cenário 2: Automação de Login em Formulário Web (DVWA)Para simular ataques contra aplicações web, foi utilizada a aplicação DVWA (Damn Vulnerable Web Application) hospedada no Metasploitable 2 (http://192.168.56.103/dvwa).
+## 6. Cenário 2: Automação de Login em Formulário Web (DVWA)
+
+Para simular ataques contra aplicações web, foi utilizada a aplicação DVWA (Damn Vulnerable Web Application) hospedada no Metasploitable 2 (http://192.168.56.103/dvwa).
 
 ```Bash
 medusa -h 192.168.56.103 -U users.txt -P pass.txt -M http \
@@ -102,5 +104,57 @@ medusa -h 192.168.56.103 -U users.txt -P pass.txt -M http \
 ```
 ---
 
+## 7. Cenário 3: Enumeração SMB e Password Spraying
 
+Diferente da força bruta tradicional (que testa várias senhas em um único usuário e costuma gerar bloqueios de conta), o Password Spraying testa uma única senha comum contra uma lista de vários usuários válidos.   
+
+Etapa 1: Enumeração de Usuários via SMB
+Utilizando o enum4linux para listar contas locais expostas pelo serviço Samba sem autenticação prévia:
+```Bash
+enum4linux -U 192.168.56.103
+```
+Os usuários válidos extraídos (ex: msfadmin, user, postgres, service) foram salvos em wordlists/users_smb_validos.txt.  
+
+Etapa 2: Execução do Password Spraying com Medusa
+Testando a senha única (-p msfadmin) contra toda a lista de usuários válidos no módulo smbnt:   
+```Bash
+medusa -h 192.168.56.103 -U wordlists/users_smb_validos.txt -p msfadmin -M smbnt
+```
+Etapa 3: Validação do Acesso via smbclient
+Com a credencial validada, listamos os compartilhamentos disponíveis no servidor:   
+```Bash
+smbclient -L //192.168.56.103 -U msfadmin
+```
+
+---
+
+## 8. Medidas de Mitigação e Hardening
+
+A partir das vulnerabilidades exploradas no laboratório, as seguintes contramedidas devem ser aplicadas em ambientes corporativos para neutralizar esses vetores:
+
+Vetor AtacadoVulnerabilidade ExploradaMedidas de Mitigação RecomendadasGeral (Todos os Serviços)Ausência de limite de tentativas e senhas fracas/padrão[cite: 1].• Implementar política de senhas fortes (comprimento mínimo, complexidade e bloqueio de senhas vazadas).
+
+• Habilitar MFA (Autenticação Multifator) sempre que possível.• Aplicar Account Lockout Policy (bloqueio temporário após $N$ falhas). |
+| FTP (Porta 21) | Protocolo em texto claro e suscetível a tentativas automatizadas[cite: 1]. | 
+
+• Substituir o FTP tradicional por SFTP (SSH File Transfer Protocol) ou FTPS.
+
+• Configurar o Fail2Ban para banir via firewall (iptables/nftables) IPs com múltiplas falhas de login. |
+| Aplicação Web (DVWA) | Falta de controle de taxa (rate limiting) e proteção contra automação[cite: 1]. | 
+
+• Implementar Rate Limiting no servidor web/WAF (ex: Nginx limit_req).
+
+• Adicionar CAPTCHA progressivo após falhas consecutivas.
+
+• Utilizar tokens anti-CSRF e atrasos progressivos (progressive delays) na resposta de erro. |
+| SMB (Portas 139/445) | Enumeração anônima de usuários e exposição de compartilhamentos[cite: 1]. | 
+
+• Desativar o protocolo legado SMBv1 e restringir sessões nulas (Null Sessions / restrict anonymous = 2 no Samba).
+
+• Bloquear portas SMB no perímetro externo e segmentar o acesso via VLAN/ACL.
+
+---
+## 9. Conclusão e Aprendizados
+
+A realização deste laboratório permitiu compreender na prática como ferramentas automatizadas como o Medusa exploram falhas de configuração e credenciais fracas em diferentes protocolos de rede. Ficou evidente que a combinação entre enumeração prévia (como no SMB) e ataques direcionados aumenta drasticamente a eficiência da auditoria, reforçando a importância de camadas defensivas como monitoramento de logs, restrição de enumeração anônima e controle de tentativas de autenticação.
 
