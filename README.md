@@ -1,6 +1,6 @@
-# 🛡️ Auditoria de Credenciais e Ataques de Força Bruta com Kali Linux e Medusa
+# 🛡️ Criando um Ataque Brute Force de senhas com Medusa e Kali Linux
 
-> **Projeto Prático – Bootcamp de Cibersegurança (DIO)**  
+> **Projeto Prático – Bootcamp Santander - Cibersegurança do Zero a prática (DIO)**  
 > Documentação técnica de testes controlados de força bruta, *password spraying* e enumeração de serviços realizados em ambiente virtualizado isolado, acompanhada de recomendações de mitigação (Blue Team).
 
 ---
@@ -31,11 +31,11 @@ O ambiente foi estruturado no **Oracle VirtualBox** utilizando uma rede privada 
 
 | Máquina Virtual | Sistema Operacional | Papel no Laboratório | Endereço IP (Exemplo) | Adaptador de Rede |
 | :--- | :--- | :--- | :--- | :--- |
-| **Atacante** | Kali Linux | Estação de auditoria e execução do Medusa | `192.168.56.101` | Host-Only (`vboxnet0`) |
-| **Alvo** | Metasploitable 2 | Servidor intencionalmente vulnerável (FTP, Web/DVWA, SMB) | `192.168.56.102` | Host-Only (`vboxnet0`) |
+| **Atacante** | Kali Linux | Estação de auditoria e execução do Medusa | `192.168.56.102` | Host-Only (`vboxnet0`) |
+| **Alvo** | Metasploitable 2 | Servidor intencionalmente vulnerável (FTP, Web/DVWA, SMB) | `192.168.56.103` | Host-Only (`vboxnet0`) |
 
 *(Substitua os endereços IP da tabela acima pelos IPs exibidos no comando `ip a` / `ifconfig` das suas VMs).*
 
 ### Validação de Conectividade
 ```bash
-ping -c 4 192.168.56.102
+ping -c 4 192.168.56.103
