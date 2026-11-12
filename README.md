@@ -132,16 +132,16 @@ smbclient -L //192.168.56.103 -U msfadmin
 
 A partir das vulnerabilidades exploradas no laboratório, as seguintes contramedidas devem ser aplicadas em ambientes corporativos para neutralizar esses vetores:
 
-• Implementar política de senhas fortes (comprimento mínimo, complexidade e bloqueio de senhas vazadas).
-• Habilitar MFA (Autenticação Multifator) sempre que possível.
-• Aplicar Account Lockout Policy (bloqueio temporário após $N$ falhas).
-• Substituir o FTP tradicional por SFTP (SSH File Transfer Protocol) ou FTPS.
-• Configurar o Fail2Ban para banir via firewall (iptables/nftables) IPs com múltiplas falhas de login.
-• Implementar Rate Limiting no servidor web/WAF (ex: Nginx limit_req).
-• Adicionar CAPTCHA progressivo após falhas consecutivas.
-• Utilizar tokens anti-CSRF e atrasos progressivos (progressive delays) na resposta de erro.
-• Desativar o protocolo legado SMBv1 e restringir sessões nulas (Null Sessions / restrict anonymous = 2 no Samba).
-• Bloquear portas SMB no perímetro externo e segmentar o acesso via VLAN/ACL.
+- Implementar política de senhas fortes (comprimento mínimo, complexidade e bloqueio de senhas vazadas).
+- Habilitar MFA (Autenticação Multifator) sempre que possível.
+- Aplicar Account Lockout Policy (bloqueio temporário após $N$ falhas).
+- Substituir o FTP tradicional por SFTP (SSH File Transfer Protocol) ou FTPS.
+- Configurar o Fail2Ban para banir via firewall (iptables/nftables) IPs com múltiplas falhas de login.
+- Implementar Rate Limiting no servidor web/WAF (ex: Nginx limit_req).
+- Adicionar CAPTCHA progressivo após falhas consecutivas.
+- Utilizar tokens anti-CSRF e atrasos progressivos (progressive delays) na resposta de erro.
+- Desativar o protocolo legado SMBv1 e restringir sessões nulas (Null Sessions / restrict anonymous = 2 no Samba).
+- Bloquear portas SMB no perímetro externo e segmentar o acesso via VLAN/ACL.
 
 ---
 
