@@ -58,7 +58,9 @@ Portas 139 e 445/TCP: Samba smbd 3.X - 4.X (SMB)
 
 ---
 
-## 4. Preparação das WordlistsPara simular cenários realistas de auditoria controlada sem gerar sobrecarga desnecessária no ambiente, foram criadas listas personalizadas enxutas na pasta /wordlists contendo usuários e senhas comuns misturados às credenciais do ambiente de teste.   
+## 4. Preparação das Wordlists
+
+Para simular cenários realistas de auditoria controlada sem gerar sobrecarga desnecessária no ambiente, foram criadas listas personalizadas enxutas na pasta /wordlists contendo usuários e senhas comuns misturados às credenciais do ambiente de teste.   
 
 wordlists - users.txt
 user\msfadmin\admin\root
@@ -68,7 +70,9 @@ wordlists - pass.txt
 
 ---
 
-## 5. Cenário 1: Força Bruta no Serviço FTP, neste cenário, o objetivo foi testar múltiplas combinações de usuários e senhas simultaneamente contra o daemon FTP utilizando o módulo ftp do Medusa.   
+## 5. Cenário 1: Força Bruta no Serviço FTP
+
+Neste cenário, o objetivo foi testar múltiplas combinações de usuários e senhas simultaneamente contra o daemon FTP utilizando o módulo ftp do Medusa.   
 
 Comando Executado
 ```Bash
