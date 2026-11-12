@@ -132,28 +132,19 @@ smbclient -L //192.168.56.103 -U msfadmin
 
 A partir das vulnerabilidades exploradas no laboratório, as seguintes contramedidas devem ser aplicadas em ambientes corporativos para neutralizar esses vetores:
 
-Vetor AtacadoVulnerabilidade ExploradaMedidas de Mitigação RecomendadasGeral (Todos os Serviços)Ausência de limite de tentativas e senhas fracas/padrão[cite: 1].• Implementar política de senhas fortes (comprimento mínimo, complexidade e bloqueio de senhas vazadas).
-
-• Habilitar MFA (Autenticação Multifator) sempre que possível.• Aplicar Account Lockout Policy (bloqueio temporário após $N$ falhas). |
-| FTP (Porta 21) | Protocolo em texto claro e suscetível a tentativas automatizadas[cite: 1]. | 
-
+• Implementar política de senhas fortes (comprimento mínimo, complexidade e bloqueio de senhas vazadas).
+• Habilitar MFA (Autenticação Multifator) sempre que possível.
+• Aplicar Account Lockout Policy (bloqueio temporário após $N$ falhas).
 • Substituir o FTP tradicional por SFTP (SSH File Transfer Protocol) ou FTPS.
-
-• Configurar o Fail2Ban para banir via firewall (iptables/nftables) IPs com múltiplas falhas de login. |
-| Aplicação Web (DVWA) | Falta de controle de taxa (rate limiting) e proteção contra automação[cite: 1]. | 
-
+• Configurar o Fail2Ban para banir via firewall (iptables/nftables) IPs com múltiplas falhas de login.
 • Implementar Rate Limiting no servidor web/WAF (ex: Nginx limit_req).
-
 • Adicionar CAPTCHA progressivo após falhas consecutivas.
-
-• Utilizar tokens anti-CSRF e atrasos progressivos (progressive delays) na resposta de erro. |
-| SMB (Portas 139/445) | Enumeração anônima de usuários e exposição de compartilhamentos[cite: 1]. | 
-
+• Utilizar tokens anti-CSRF e atrasos progressivos (progressive delays) na resposta de erro.
 • Desativar o protocolo legado SMBv1 e restringir sessões nulas (Null Sessions / restrict anonymous = 2 no Samba).
-
 • Bloquear portas SMB no perímetro externo e segmentar o acesso via VLAN/ACL.
 
 ---
+
 ## 9. Conclusão e Aprendizados
 
 A realização deste laboratório permitiu compreender na prática como ferramentas automatizadas como o Medusa exploram falhas de configuração e credenciais fracas em diferentes protocolos de rede. Ficou evidente que a combinação entre enumeração prévia (como no SMB) e ataques direcionados aumenta drasticamente a eficiência da auditoria, reforçando a importância de camadas defensivas como monitoramento de logs, restrição de enumeração anônima e controle de tentativas de autenticação.
