@@ -49,7 +49,7 @@ Antes de iniciar os testes de autenticação, foi realizada uma varredura de por
 
 ```bash
 nmap -sV -p 21,22,80,445,139 192.168.56.103
-````
+```
 Principais serviços identificados:
 Porta 21/TCP: vsftpd 2.3.4 (FTP)
 Porta 22/TCP: (SSH)
